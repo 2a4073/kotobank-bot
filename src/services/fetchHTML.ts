@@ -12,7 +12,7 @@ export class fetchHTML implements fetch {
             const res = await globalThis.fetch(url);
 
             if (!res.ok) {
-                throw new Error(`Failed fetch "${url}".(${res.status}`);
+                throw new Error(`Failed fetch "${url}".(${res.status})`);
             }
 
             return await res.text();
