@@ -2,14 +2,15 @@ import "dotenv/config";
 import { fetchKotobank } from "./services/fetchKotobank";
 import { parseKotobankHTML } from "./services/parseHTML";
 import { startHttpServer } from "./http/server";
-import "./discord/client";
+// import "./discord/client";
+import { loadDir, LoadCommand } from "./discord/commandLoader";
 
 const PORT: number = Number(process.env.PORT) || 3000
 
-startHttpServer(PORT);
+// startHttpServer(PORT);
 
 async function main(): Promise<void> {
-    try {
+    /*try {
         const HTML = await fetchKotobank("靉");
         const descriptions = new parseKotobankHTML().parse(HTML);
 
@@ -20,7 +21,11 @@ async function main(): Promise<void> {
         if (e instanceof Error) {
             console.error(e.message);
         }
-    }
+    }*/
+    const cmdLoader = new LoadCommand();
+    const commands = await cmdLoader.load("/home/mjx829/work/kotobank-bot/src/discord/commands/");
+    console.log(commands);
+    // const files = await loadDir("/home/mjx829/work/kotobank-bot/src/");
 }
 
 main();
