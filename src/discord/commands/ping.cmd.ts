@@ -6,9 +6,10 @@ export default class Ping extends CommandBase {
 
     public data = new SlashCommandBuilder()
         .setName("ping")
-        .setDescription("aa");
+        .setDescription("レイテンシを計測する．");
 
     async execute(interaction: ChatInputCommandInteraction) {
+        console.log(interaction);
         await interaction.reply("Pong!");
     }
 }
