@@ -10,7 +10,7 @@ export class LogConsole implements Logger {
         second: "2-digit",
     };
 
-    write (message: string, level: LogLevels): void {
+    write (level: LogLevels, message: string): void {
         const formatedMassage = this.formatMessage(message, level);
 
         switch (level) {
@@ -28,7 +28,7 @@ export class LogConsole implements Logger {
 
     private formatMessage(message: string, level: LogLevels): string {
         const timestamp = this.formatTimestamp();
-        return `[${timestamp}] [${level.toString()}] ${message}`;
+        return `[${timestamp}][${level.toString()}] ${message}`;
     }
 
     private formatTimestamp(): string {

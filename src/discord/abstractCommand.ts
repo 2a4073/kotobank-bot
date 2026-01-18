@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 
-export abstract class abstractCommand {
+export abstract class CommandBase {
     public abstract data: SlashCommandBuilder;
     abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
 

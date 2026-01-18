@@ -1,10 +1,13 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
-import { AbstractCommand } from "./abstractCommand";
+import { CommandBase } from "../abstractCommand";
 
-export default class Ping extends AbstractCommand {
-    data = new SlashCommandBuilder()
+export default class Ping extends CommandBase {
+    constructor() { super(); }
+
+    public data = new SlashCommandBuilder()
         .setName("ping")
-        .setDescription("");
+        .setDescription("aa");
+
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.reply("Pong!");
     }
