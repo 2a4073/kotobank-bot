@@ -1,6 +1,5 @@
 export type LogLevels = "DEBUG" | "INFO" | "WARN" | "ERROR";
 
 export interface Logger {
-    write(message: string, level: LogLevels): void;
+    write(level: LogLevels, message: string): void;
 }
-

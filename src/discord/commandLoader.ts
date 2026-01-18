@@ -1,15 +1,18 @@
+import { Logger } from "@/services/logger.interface";
 import { LogConsole } from "@/services/logger";
+import { CommandCollection, CommandLoader } from "./command.types";;
 import { Collection } from "discord.js";
 import { CommandBase } from "./abstractCommand";
 import fs from "node:fs";
 import path from "node:path";
 
 // コマンドrequire
-export class LoadCommand {
+export class LoadCommand implements CommandLoader {
     private filePattern = /\.cmd\.(ts|js)$/;
-    private logger = new LogConsole();
-    public commands = new Collection<string, CommandBase>();
-    async load (dir: string): Promise<Collection<string, CommandBase>>{
+    private logger: Logger = new LogConsole();
+    public commands: CommandCollection = new Collection<string, CommandBase>();
+
+    async load (dir: string): Promise<CommandCollection> {
         const files = await loadDir(dir);
         for (const path of files) {
             if (!this.filePattern.test(path)) {
@@ -27,7 +30,7 @@ export class LoadCommand {
 
                 this.commands.set(Command.data.name, Command);
 
-                this.logger.write("INFO", `loaded command file. (${path})`);
+                this.logger.write("INFO", `loaded command file, ${path}.`);
             } catch (e) {
                 this.logger.write("WARN", `failed to load command file. (${path}), ${e}`);
             }
@@ -36,9 +39,8 @@ export class LoadCommand {
     }
 }
 
-// そのうちexportを外すこと
 // dirはフルパスを期待する
-export async function loadDir(dir: string): Promise<string[]> {
+async function loadDir(dir: string): Promise<string[]> {
     let filesPath: string[] = [];
     const loadedFiles = fs.readdirSync(dir);
 
