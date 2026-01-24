@@ -1,4 +1,7 @@
+import { LogConsole } from "../services/logger";
 import express from "express";
+
+const logger = new LogConsole();
 
 export const startHttpServer = (port: number): void => {
 	const app = express();
@@ -9,6 +12,6 @@ export const startHttpServer = (port: number): void => {
     });
 
     app.listen(port, () => {
-        console.log(`HTTP sever listening on port ${port}`);
+        logger.write("INFO", `HTTP sever listening on port ${port}.`);
     })
 };

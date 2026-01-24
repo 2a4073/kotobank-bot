@@ -1,25 +1,32 @@
 import "dotenv/config";
-import { fetchKotobank } from "./services/fetchKotobank";
-import { parseKotobankHTML } from "./services/parseHTML";
+import { LogConsole } from "./services/logger";
 import { startHttpServer } from "./http/server";
-import "./discord/client";
-// import { LoadCommand } from "./discord/commandLoader";
+import { ClientManager } from "./discord/client";
+import { LoadCommand } from "./discord/commandLoader";
+import { HandleCommandInteraction } from "./discord/commandHandler";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 
 const PORT: number = Number(process.env.PORT) || 3000
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const logger = new LogConsole();
 
 startHttpServer(PORT);
 
 async function main(): Promise<void> {
+    logger.write("INFO", `scripts will start...`);
     try {
-        const HTML = await fetchKotobank("靉");
-        const descriptions = new parseKotobankHTML().parse(HTML);
+        const commandLoader = new LoadCommand();
+        const commandsDir = path.join(__dirname, "discord/commands/");
+        const commands = await commandLoader.load(commandsDir);
+        const commandHandler = new HandleCommandInteraction(commands);
+        const clientManager = new ClientManager(commandHandler); 
 
-        for (const desc of descriptions) {
-            console.log(desc);
-        }
+        clientManager.setup();
     } catch (e) {
         if (e instanceof Error) {
-            console.error(e.message);
+           logger.write("ERROR", e.message);
         }
     }
 }

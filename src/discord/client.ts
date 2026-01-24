@@ -1,27 +1,33 @@
+import { Logger } from "@/services/logger.interface";
+import { LogConsole } from "@/services/logger";
 import { Client, GatewayIntentBits } from "discord.js";
+import { CommandHandler } from "./command.types";
 
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMembers,
-    ]
-});
+export class ClientManager {
+    private logger: Logger = new LogConsole();
+    public client = new Client({
+        intents: [
+            GatewayIntentBits.Guilds,
+            GatewayIntentBits.GuildMessages,
+            GatewayIntentBits.MessageContent,
+            GatewayIntentBits.GuildMembers,
+        ]
+    });
 
-client.on("clientReady", () => {
-    if (!client.user) return;
+    constructor (
+        private commandHandler: CommandHandler,
+    ) {}
 
-    const timeOptions: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-    };
+    public async setup() {
+        this.client.on("interactionCreate", (interaction) => {
+            this.commandHandler.handle(interaction);
+        });
 
-    console.log(`[${new Intl.DateTimeFormat("ja-JP", timeOptions).format(new Date)}] Client was started as ${client.user.tag}`);
-});
+        this.client.on("clientready", () => {
+            if (!this.client.user) return;
+            this.logger.write("INFO", `client was started as ${this.client.user.tag}.`);
+        });
 
-client.login(process.env.DISCORD_BOT_TOKEN);
+        this.client.login(process.env.DISCORD_BOT_TOKEN);
+    }
+}
